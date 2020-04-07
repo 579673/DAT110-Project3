@@ -53,17 +53,10 @@ public class FileManager {
 	}
 	
 	public void createReplicaFiles() {
-	 	
-		// implement
-		
-		// set a loop where size = numReplicas
-		
-		// replicate by adding the index to filename
-		
-		// hash the replica
-		
-		// store the hash in the replicafiles array.
-
+		for (int i = 0; i < numReplicas; i++) {
+			String fn = filename + i;
+			replicafiles[i] = Hash.hashOf(fn);
+		}
 	}
 	
     /**
@@ -71,28 +64,34 @@ public class FileManager {
      * @param bytesOfFile
      * @throws RemoteException 
      */
-    public int distributeReplicastoPeers() throws RemoteException {
-    	int counter = 0;
-    	
-    	// Task1: Given a filename, make replicas and distribute them to all active peers such that: pred < replica <= peer
-    	
-    	// Task2: assign a replica as the primary for this file. Hint, see the slide (project 3) on Canvas
-    	
-    	// create replicas of the filename
-    	
+	public int distributeReplicastoPeers() throws RemoteException {
+		int counter = 0;
+
+		// Task1: Given a filename, make replicas and distribute them to all active peers such that: pred < replica <= peer
+
+		// Task2: assign a replica as the primary for this file. Hint, see the slide (project 3) on Canvas
+
+		// create replicas of the filename
+		createReplicaFiles();
 		// iterate over the replicas
-    	
-    	// for each replica, find its successor by performing findSuccessor(replica)
-    	
-    	// call the addKey on the successor and add the replica
-    	
-    	// call the saveFileContent() on the successor
-    	
-    	// increment counter
-    	
-    		
+		for (BigInteger replica : replicafiles){
+
+
+			// for each replica, find its successor by performing findSuccessor(replica)
+
+			NodeInterface successor = chordnode.findSuccessor(replica);
+
+			// call the addKey on the successor and add the replica
+			successor.addKey(replica);
+
+			// call the saveFileContent() on the successor
+			successor.saveFileContent(filename,replica,bytesOfFile,false);
+			// increment counter
+			counter++;
+		}
+
 		return counter;
-    }
+	}
 	
 	/**
 	 * 
