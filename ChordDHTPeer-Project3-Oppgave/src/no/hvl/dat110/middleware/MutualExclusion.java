@@ -62,7 +62,7 @@ public class MutualExclusion {
 		WANTS_TO_ENTER_CS = true;
 		
 		// start MutualExclusion algorithm
-		node.onMutexRequestReceived(message); //TODO: Refactored this to node. instead of just onMutex..
+		node.onMutexRequestReceived(message); //NOTE: Refactored this to node. instead of just onMutex..
 		// first, removeDuplicatePeersBeforeVoting. A peer can contain 2 replicas of a file. This peer will appear twice
 		removeDuplicatePeersBeforeVoting();
 		// multicast the message to activenodes (hint: use multicastMessage)
@@ -71,7 +71,7 @@ public class MutualExclusion {
 		boolean permission = areAllMessagesReturned(Util.numReplicas);
 		if (permission) {
 			// if yes, acquireLock
-			node.acquireLock(); //TODO: Refactored this to node. instead of just acquireLock()
+			node.acquireLock(); //NOTE: Refactored this to node. instead of just acquireLock()
 		}
 		
 		// node.broadcastUpdatetoPeers
