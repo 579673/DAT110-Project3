@@ -62,16 +62,16 @@ public class MutualExclusion {
 		WANTS_TO_ENTER_CS = true;
 		
 		// start MutualExclusion algorithm
-		onMutexRequestReceived(message);
+		node.onMutexRequestReceived(message); //TODO: Refactored this to node. instead of just onMutex..
 		// first, removeDuplicatePeersBeforeVoting. A peer can contain 2 replicas of a file. This peer will appear twice
 		removeDuplicatePeersBeforeVoting();
 		// multicast the message to activenodes (hint: use multicastMessage)
 		multicastMessage(message, new ArrayList<>(node.activenodesforfile));
 		// check that all replicas have replied (permission)
-		boolean permission;
-		if (permission = areAllMessagesReturned(5)) {
+		boolean permission = areAllMessagesReturned(Util.numReplicas);
+		if (permission) {
 			// if yes, acquireLock
-			acquireLock();
+			node.acquireLock(); //TODO: Refactored this to node. instead of just acquireLock()
 		}
 		
 		// node.broadcastUpdatetoPeers
@@ -209,15 +209,15 @@ public class MutualExclusion {
 	
 	private boolean areAllMessagesReturned(int numvoters) throws RemoteException {
 		// check if the size of the queueack is same as the numvoters
+		boolean allReturned = false;
 		if (queueack.size() == numvoters) {
 			// clear the queueack
-			queueack.clear();
-			return true;
+			allReturned = true;
 		}
 		
 		// return true if yes and false if no
 
-		return false;
+		return allReturned;
 	}
 	
 	private List<Message> removeDuplicatePeersBeforeVoting() {
